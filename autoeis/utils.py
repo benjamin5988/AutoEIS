@@ -301,7 +301,9 @@ def fit_circuit_parameters(
             popt, pcov = curve_fit(obj_fn, freq, Zc, **kwargs)
         except RuntimeError:
             continue
-        err = np.mean((obj_fn(freq, *popt) - Zc) ** 2)
+        # err = np.mean((obj_fn(freq, *popt) - Zc) ** 2)
+        #change to Zmod weighted error
+        err = np.sum((np.abs(obj_fn(freq, *popt) - Zc)**2)*((1/np.abs(Zc))**2))
         if err < err_min:
             err_min = err
             p0 = popt
